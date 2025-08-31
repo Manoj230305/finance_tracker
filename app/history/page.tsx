@@ -9,14 +9,14 @@ interface Transaction {
   date: string;
   category: string;
   amount: number;
-  type: "Income" | "Expense";
-  paymentType: string;
+  flow: "Income" | "Expense";
+  payment_type: string;
 }
 
 export default function HistoryPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([
-    { id: 1, date: "2025-08-30", category: "Food", amount: 500, type: "Expense", paymentType: "UPI" },
-    { id: 2, date: "2025-08-29", category: "Salary", amount: 3000, type: "Income", paymentType: "Bank" },
+    { id: 1, date: "2025-08-30", category: "Food", amount: 500, flow: "Expense", payment_type: "UPI" },
+    { id: 2, date: "2025-08-29", category: "Salary", amount: 3000, flow: "Income", payment_type: "Bank" },
   ]);
 
   const handleDelete = (id: number) => {
@@ -50,13 +50,13 @@ export default function HistoryPage() {
                   <td className="px-6 py-3">{t.category}</td>
                   <td
                     className={`px-6 py-3 font-semibold ${
-                      t.type === "Income" ? "text-green-600" : "text-red-600"
+                      t.flow === "Income" ? "text-green-600" : "text-red-600"
                     }`}
                   >
-                    {t.type === "Income" ? "+" : "-"}₹{t.amount}
+                    {t.flow === "Income" ? "+" : "-"}₹{t.amount}
                   </td>
-                  <td className="px-6 py-3">{t.type}</td>
-                  <td className="px-6 py-3">{t.paymentType}</td>
+                  <td className="px-6 py-3">{t.flow}</td>
+                  <td className="px-6 py-3">{t.payment_type}</td>
                   <td className="px-6 py-3">
                     <button
                       onClick={() => handleDelete(t.id)}
