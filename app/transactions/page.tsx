@@ -25,7 +25,7 @@ export default function TransactionsPage() {
   const handleTypeChange = (newType: "expense" | "income") => {
     setForm({
       ...form,
-      type: newType,
+      flow: newType,
       category: newType === 'expense' ? expenseCategories[0] : incomeCategories[0],
     });
   };
@@ -43,7 +43,7 @@ export default function TransactionsPage() {
     };
 
     // Remove paymentType if it's an income transaction
-    if (newTransaction.type === 'income') {
+    if (newTransaction.flow === 'income') {
       delete (newTransaction as any).paymentType;
     }
     
@@ -64,8 +64,8 @@ export default function TransactionsPage() {
       alert("Transaction saved!");
       // Reset form after successful submission
       setForm({
-        type: "expense", amount: "", category: expenseCategories[0],
-        paymentType: "Cash", date: new Date().toISOString().split("T")[0], note: "",
+        flow: "expense", amount: "", category: expenseCategories[0],
+        payment_type: "Cash", date: new Date().toISOString().split("T")[0], notes: "",
       });
 
     } catch (error) {
@@ -74,7 +74,7 @@ export default function TransactionsPage() {
     }
   };
 
-  const categories = form.type === 'expense' ? expenseCategories : incomeCategories;
+  const categories = form.flow === 'expense' ? expenseCategories : incomeCategories;
 
   return (
     // ... your JSX remains the same
@@ -85,13 +85,13 @@ export default function TransactionsPage() {
         {/* Type toggle */}
         <div className="flex gap-4 mb-4">
           <button
-            className={`flex-1 px-4 py-2 rounded ${form.type === "expense" ? "bg-gray-900 text-white" : "bg-gray-200"}`}
+            className={`flex-1 px-4 py-2 rounded ${form.flow === "expense" ? "bg-gray-900 text-white" : "bg-gray-200"}`}
             onClick={() => handleTypeChange("expense")}
           >
             Expense
           </button>
           <button
-            className={`flex-1 px-4 py-2 rounded ${form.type === "income" ? "bg-gray-900 text-white" : "bg-gray-200"}`}
+            className={`flex-1 px-4 py-2 rounded ${form.flow === "income" ? "bg-gray-900 text-white" : "bg-gray-200"}`}
             onClick={() => handleTypeChange("income")}
           >
             Income
@@ -114,8 +114,8 @@ export default function TransactionsPage() {
           ))}
         </select>
         
-        {form.type === "expense" && (
-          <select name="paymentType" value={form.paymentType} onChange={handleChange} className="w-full mb-3 border rounded p-2">
+        {form.flow === "expense" && (
+          <select name="paymentType" value={form.payment_type} onChange={handleChange} className="w-full mb-3 border rounded p-2">
             <option>Cash</option>
             <option>Card</option>
             <option>UPI</option>
@@ -124,7 +124,7 @@ export default function TransactionsPage() {
 
         <input type="date" name="date" value={form.date} onChange={handleChange} className="w-full mb-3 border rounded p-2" />
 
-        <textarea name="note" value={form.note} onChange={handleChange} placeholder="Optional note" className="w-full mb-4 border rounded p-2"></textarea>
+        <textarea name="note" value={form.notes} onChange={handleChange} placeholder="Optional note" className="w-full mb-4 border rounded p-2"></textarea>
 
         <button onClick={handleSubmit} className="w-full bg-gray-600 text-white py-2 rounded hover:bg-gray-900">
           Save Transaction
