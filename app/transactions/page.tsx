@@ -10,12 +10,12 @@ const incomeCategories = ["Salary", "Freelance", "Gift", "Other"];
 
 export default function TransactionsPage() {
   const [form, setForm] = useState({
-    type: "expense",
+    flow: "expense",
     amount: "",
     category: expenseCategories[0],
-    paymentType: "Cash",
+    payment_type: "Cash",
     date: new Date().toISOString().split("T")[0],
-    note: "",
+    notes: "",
   });
 
   const handleChange = (e: any) => {
@@ -49,7 +49,7 @@ export default function TransactionsPage() {
     
     try {
       // Use fetch to send data to your API endpoint
-      const response = await fetch('/api/transactions', {
+      const response = await fetch('https://w1gv1psp-8000.inc1.devtunnels.ms/add/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
