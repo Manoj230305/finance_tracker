@@ -1,4 +1,3 @@
-// 📁 app/transactions/page.tsx (or wherever your form is)
 "use client";
 
 import { useState } from "react";
@@ -84,19 +83,19 @@ export default function TransactionsPage() {
           <p className="text-sm text-slate-600 dark:text-slate-400">Quickly record an expense or income. Transactions are stored locally in your browser.</p>
         </div>
 
-        {/* Type toggle */}
+        {/* Flow toggle (Expense/Income) */}
         <div className="flex gap-4 mb-4 bg-slate-100 dark:bg-slate-800 p-1 rounded-full">
           <button
-            className={`flex-1 px-4 py-2 rounded-full text-sm font-medium transition ${form.type === "expense" ? "bg-red-600 text-white shadow" : "text-slate-700 dark:text-slate-200"}`}
-            onClick={() => setForm({ ...form, type: "expense" })}
-            aria-pressed={form.type === "expense"}
+            className={`flex-1 px-4 py-2 rounded-full text-sm font-medium transition ${form.flow === "expense" ? "bg-red-600 text-white shadow" : "text-slate-700 dark:text-slate-200"}`}
+            onClick={() => handleTypeChange("expense")}
+            aria-pressed={form.flow === "expense"}
           >
             Expense
           </button>
           <button
-            className={`flex-1 px-4 py-2 rounded-full text-sm font-medium transition ${form.type === "income" ? "bg-green-600 text-white shadow" : "text-slate-700 dark:text-slate-200"}`}
-            onClick={() => setForm({ ...form, type: "income" })}
-            aria-pressed={form.type === "income"}
+            className={`flex-1 px-4 py-2 rounded-full text-sm font-medium transition ${form.flow === "income" ? "bg-green-600 text-white shadow" : "text-slate-700 dark:text-slate-200"}`}
+            onClick={() => handleTypeChange("income")}
+            aria-pressed={form.flow === "income"}
           >
             Income
           </button>
@@ -113,34 +112,27 @@ export default function TransactionsPage() {
         />
 
         <select name="category" value={form.category} onChange={handleChange} className="w-full mb-3 border border-slate-200 dark:border-slate-700 rounded-lg p-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm">
-          <option>Food</option>
-          <option>Travel</option>
-          <option>Shopping</option>
-          <option>Other</option>
+          {categories.map((cat) => (
+            <option key={cat} value={cat}>{cat}</option>
+          ))}
         </select>
 
-        <select name="paymentType" value={form.paymentType} onChange={handleChange} className="w-full mb-3 border border-slate-200 dark:border-slate-700 rounded-lg p-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm">
-          <option>Cash</option>
-          <option>Card</option>
-          <option>UPI</option>
-        </select>
-        
         {form.flow === "expense" && (
-          <select name="paymentType" value={form.payment_type} onChange={handleChange} className="w-full mb-3 border rounded p-2">
-            <option>Cash</option>
-            <option>Card</option>
-            <option>UPI</option>
+          <select name="payment_type" value={form.payment_type} onChange={handleChange} className="w-full mb-3 border border-slate-200 dark:border-slate-700 rounded-lg p-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm">
+            <option value="Cash">Cash</option>
+            <option value="Card">Card</option>
+            <option value="UPI">UPI</option>
           </select>
         )}
 
         <input type="date" name="date" value={form.date} onChange={handleChange} className="w-full mb-3 border border-slate-200 dark:border-slate-700 rounded-lg p-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm" />
 
-        <textarea name="note" value={form.note} onChange={handleChange} placeholder="Optional note" className="w-full mb-4 border border-slate-200 dark:border-slate-700 rounded-lg p-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm"></textarea>
+  <textarea name="notes" value={form.notes} onChange={handleChange} placeholder="Optional note" className="w-full mb-4 border border-slate-200 dark:border-slate-700 rounded-lg p-3 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 shadow-sm"></textarea>
 
         <button onClick={handleSubmit} className="w-full py-2 rounded-lg text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:scale-[1.01] active:scale-[0.99] transition-shadow shadow-md">
           Save Transaction
         </button>
       </Card>
     </div>
-  );
+  );
 }

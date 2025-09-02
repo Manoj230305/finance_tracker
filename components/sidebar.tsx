@@ -12,7 +12,7 @@ const navItems = [
 
 export function Sidebar() {
   return (
-    <aside className="w-64 bg-sidebar text-sidebar-foreground border-r border-sidebar-border flex flex-col p-4">
+  <aside className="sidebar w-64 flex flex-col p-4">
       {/* Logo */}
       <div className="text-xl font-bold mb-10">
         💰 Finance Tracker
