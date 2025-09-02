@@ -1,27 +1,90 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Trash2 } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { Card } from "@/components/ui/card"; // Assuming you have a Card component from ShadCN UI or similar
 
+// Define the shape of a single transaction object. 
+// This should match the data structure from your API.
 interface Transaction {
-  id: number;
+  id: string; // A unique ID from the database, usually a string
   date: string;
   category: string;
   amount: number;
-  type: "Income" | "Expense";
-  paymentType: string;
+  flow: "income" | "expense";
+  payment_type?: string; // Optional for income transactions
+  notes?: string;
 }
 
 export default function HistoryPage() {
-  const [transactions, setTransactions] = useState<Transaction[]>([
-    { id: 1, date: "2025-08-30", category: "Food", amount: 500, type: "Expense", paymentType: "UPI" },
-    { id: 2, date: "2025-08-29", category: "Salary", amount: 3000, type: "Income", paymentType: "Bank" },
-  ]);
+  // State to hold the list of transactions
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  // State to manage the loading status while fetching data
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  // State to hold any potential error messages
+  const [error, setError] = useState<string | null>(null);
 
-  const handleDelete = (id: number) => {
-    setTransactions(transactions.filter((t) => t.id !== id));
+  // An async function to fetch data from the API
+  const fetchTransactions = async () => {
+    try {
+      // --- IMPORTANT: Replace '/api/transactions' with your actual API endpoint ---
+      const response = await fetch('https://w1gv1psp-8000.inc1.devtunnels.ms/view/');
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok. Failed to fetch data.');
+      }
+
+      const data: Transaction[] = await response.json();
+      setTransactions(data); // Update state with fetched data
+    } catch (err: any) {
+      setError(err.message); // Store error message to display to the user
+      console.error("Failed to fetch transactions:", err);
+    } finally {
+      setIsLoading(false); // Stop loading, whether successful or not
+    }
   };
+
+  // The useEffect hook runs this function once when the component first loads
+  useEffect(() => {
+    fetchTransactions();
+  }, []); // The empty dependency array [] ensures it only runs once on mount
+
+  // Function to handle the deletion of a transaction
+  const handleDelete = async (id: string) => {
+    // Ask for user confirmation before deleting
+    if (!confirm("Are you sure you want to delete this transaction?")) {
+      return;
+    }
+
+    try {
+      // Send a DELETE request to the API endpoint for the specific transaction
+      const response = await fetch(`https://w1gv1psp-8000.inc1.devtunnels.ms/delete/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete transaction on the server.');
+      }
+
+      // After successful deletion, refresh the transaction list from the server
+      // This ensures the UI is in sync with the database
+      fetchTransactions();
+
+    } catch (err: any) {
+      setError(err.message);
+      console.error("Failed to delete transaction:", err);
+    }
+  };
+
+  // Display a loading message while data is being fetched
+  if (isLoading) {
+    return <div className="p-6 text-center">Loading history...</div>;
+  }
+
+  // Display an error message if the fetch failed
+  if (error) {
+    return <div className="p-6 text-center text-red-600">Error: {error}</div>;
+  }
 
   return (
     <div className="p-6 bg-gradient-to-br from-indigo-50 via-white to-rose-50 dark:from-slate-900 dark:via-slate-950 dark:to-slate-900 rounded-xl">
